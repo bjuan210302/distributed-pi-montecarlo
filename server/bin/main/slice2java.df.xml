@@ -1,0 +1,24 @@
+<state>
+  <timestamp value='1654226422324' />
+  <sourceSet name='default'>
+    <source name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\Montecarlo.ice'>
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Point.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Task.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Observer.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Worker.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Subject.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\Master.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\PointSequenceHelper.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\ObserverPrx.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\_ObserverPrxI.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\WorkerPrx.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\_WorkerPrxI.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\SubjectPrx.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\_SubjectPrxI.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\MasterPrx.java' />
+      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\server\build\generated-src\Montecarlo\_MasterPrxI.java' />
+    </source>
+    <arg value='C:\Program Files\ZeroC\Ice-3.7.7\\bin\slice2java.exe' />
+    <arg value='-IC:\Program Files\ZeroC\Ice-3.7.7\\slice' />
+  </sourceSet>
+</state>
