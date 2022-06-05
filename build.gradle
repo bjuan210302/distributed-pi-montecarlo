@@ -44,7 +44,7 @@ subprojects {
    jar {
         manifest {
             attributes(
-                "Main-Class": project.name.capitalize(),
+                "Main-Class": project.name.capitalize() + "Server",
                 "Class-Path": configurations.runtimeClasspath.resolve().collect { it.toURI() }.join(' ')
             )
         }

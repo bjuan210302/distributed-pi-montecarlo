@@ -8,5 +8,5 @@
  */
 
 rootProject.name = 'callbackIce'
-include 'client'
-include 'server'
+include 'worker'
+include 'master'
