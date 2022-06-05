@@ -38,10 +38,10 @@ public final class MasterController implements Master
         experiment.processNewPoints(points);
     }
 
-    public void initCalculation(int targetPoints, int epsilonExp) {
+    public void initCalculation(int targetPointsExponent, int epsilonExp, long seed) {
         this.experiment = new MontecarloExperiment();
-        this.experiment.initExperiment(targetPoints, epsilonExp);
-        this.remainingPoints = targetPoints;
+        this.experiment.initExperiment(targetPointsExponent, epsilonExp);
+        this.remainingPoints = targetPointsExponent;
         this.epsilonExp = epsilonExp;
         updateAll(true);
     }
