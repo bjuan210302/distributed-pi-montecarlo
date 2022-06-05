@@ -20,7 +20,7 @@ public class MontecarloExperiment {
         pointStore.enqueuToProcess(points);
     }
 
-    public void updateState(int totalPointsInside, int totalPointsOutside, int totalPoints) {
+    public void updateState(int totalPointsInside, int totalPointsOutside, int totalPoints, int repeatedPoints) {
         this.totalPointsInside = totalPointsInside;
         this.totalPointsOutside = totalPointsOutside;
 

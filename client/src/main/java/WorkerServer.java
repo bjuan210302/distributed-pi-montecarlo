@@ -4,7 +4,7 @@ import Montecarlo.*;
 
 import java.util.*;
 
-public class WorkerInitializer {
+public class WorkerServer {
     public static void main(String[] args) {
         int status = 0;
         List<String> extraArgs = new ArrayList<>();
@@ -32,9 +32,9 @@ public class WorkerInitializer {
         WorkerController workerController = new WorkerController(adapter, master);
         System.out.println("Worker is ready. Waiting for isTaskAvailable");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            communicator.destroy();
             System.out.println("Shutting down");
             workerController.onShutDown();
+            communicator.destroy();
         }));
         communicator.waitForShutdown();
 

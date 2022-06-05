@@ -30,7 +30,7 @@ public final class WorkerController implements Worker
         if (taskAvailable)
             work();
         else {
-            this.generator.intentionalKillGen();
+            this.generator.intentionalKillTask();
             System.out.println("Generation killed");
         }
     }
@@ -46,7 +46,7 @@ public final class WorkerController implements Worker
     }
 
     public void onShutDown() {
-        this.generator.intentionalKillGen();
+        this.generator.intentionalKillTask();
         // Report points
         System.out.println("Generation killed by shutdown");
     }

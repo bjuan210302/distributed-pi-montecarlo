@@ -1,6 +1,6 @@
 import java.util.*;
 import com.zeroc.Ice.*;
-public class Server {
+public class MasterServer {
     public static void main(String[] args) {
         int status = 0;
         List<String> extraArgs = new ArrayList<String>();

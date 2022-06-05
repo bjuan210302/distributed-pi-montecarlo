@@ -19,6 +19,10 @@ public class PointStore {
     private Queue<Result> toCheckQueue;
     private TreeSet<Point> inside;
     private TreeSet<Point> outside;
+    private LinkedList<Point> allPoints;
+    private int insideCounter;
+    private int outsideCounter;
+    private int repeatedCounter;
     private Thread processerThread;
     private boolean isChecking;
     private int targetPoints;
@@ -56,27 +60,35 @@ public class PointStore {
         this.isChecking = true;
         Result currentResult = toCheckQueue.poll();
 
-        while (currentResult != null && this.addedPoints < this.targetPoints) {
+        while (currentResult != null) {
 
             for (Point p : currentResult.points) {
-                boolean pointWasAdded = tryToAdd(p);
+                this.allPoints.add(p);
+                this.addedPoints++;
 
-                if (pointWasAdded) {
-                    this.addedPoints++;
-                    if (this.addedPoints == this.targetPoints)
-                        toCheckQueue.clear();
+                boolean pointIsNew = false;
+                if (p.isInside) {
+                    this.insideCounter++;
+                    pointIsNew = this.inside.add(p);
+                } else {
+                    this.outsideCounter++;
+                    pointIsNew = this.outside.add(p);
+                }
+
+                if (!pointIsNew)
+                    this.repeatedCounter++;
+
+                if (this.addedPoints == this.targetPoints) {
+                    toCheckQueue.clear();
+                    break;
                 }
             }
 
-            this.experiment.updateState(inside.size(), outside.size(), addedPoints);
+            this.experiment.updateState(this.insideCounter, this.outsideCounter, this.addedPoints, this.repeatedCounter);
             currentResult = toCheckQueue.poll();
         }
+
+        this.isChecking = false;
     }
 
-    private boolean tryToAdd(Point p) {
-        if (p.isInside)
-            return this.inside.add(p);
-        else
-            return this.outside.add(p);
-    }
 }
