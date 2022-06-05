@@ -1,9 +1,8 @@
 #
-# The server creates one single object adapter with the name
-# "Callback.Server". The following line sets the endpoints for this
-# adapter.
+# MasterServer creates one single object adapter with the name
+# "MasterWorker.Master"
 #
-Callback.Server.Endpoints=default -h hgrid14 -p 9001
+MasterWorker.Master.Endpoints=default -h hgrid14 -p 9001
 
 #
 # Warn about connection exceptions

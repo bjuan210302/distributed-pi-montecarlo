@@ -2,14 +2,13 @@
 # The client reads this property to create the reference to the
 # "CallbackSender" object in the server.
 #
-Subject.Proxy=subject:default -h hgrid14 -p 9001
+Master.Direct=subject:default -h hgrid14 -p 9001
 
 #
 # The client creates one single object adapter with the name
-# "Callback.Client". The following line sets the endpoints for this
-# adapter.
+# "MasterWorker.Worker".
 #
-Callback.Client.Endpoints=default -h localhost
+MasterWorker.Worker.Endpoints=default -h localhost
 
 #
 # Warn about connection exceptions

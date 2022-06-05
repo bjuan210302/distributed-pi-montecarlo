@@ -21,7 +21,7 @@ public class WorkerServer {
     }
 
     private static int run(Communicator communicator) {
-        MasterPrx master = MasterPrx.checkedCast(communicator.propertyToProxy("Subject.Proxy")).ice_twoway()
+        MasterPrx master = MasterPrx.checkedCast(communicator.propertyToProxy("Master.Direct")).ice_twoway()
                 .ice_timeout(-1).ice_secure(false);
         if (master == null) {
             System.err.println("No Master to subscribe to");
