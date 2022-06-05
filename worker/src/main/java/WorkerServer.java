@@ -28,7 +28,8 @@ public class WorkerServer {
             return 1;
         }
 
-        ObjectAdapter adapter = communicator.createObjectAdapter("MasterWorker.Worker");
+        System.out.println("Master found...");
+        ObjectAdapter adapter = communicator.createObjectAdapter("Worker");
         WorkerController workerController = new WorkerController(adapter, master);
         System.out.println("Worker is ready. Waiting for isTaskAvailable");
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

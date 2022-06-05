@@ -2,7 +2,7 @@
 # MasterServer creates one single object adapter with the name
 # "MasterWorker.Master"
 #
-MasterWorker.Master.Endpoints=default -h hgrid14 -p 9001
+Master.Endpoints=default -h hgrid14 -p 9001
 
 #
 # Warn about connection exceptions
@@ -17,7 +17,7 @@ Ice.Warn.Connections=1
 # 2 = like 1, but more detailed
 # 3 = like 2, but also trace data transfer
 #
-#Ice.Trace.Network=1
+Ice.Trace.Network=2
 
 #
 # Protocol Tracing

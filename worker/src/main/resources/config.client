@@ -8,7 +8,7 @@ Master.Direct=subject:default -h hgrid14 -p 9001
 # The client creates one single object adapter with the name
 # "MasterWorker.Worker".
 #
-MasterWorker.Worker.Endpoints=default -h localhost
+Worker.Endpoints=default -h hgrid13
 
 #
 # Warn about connection exceptions
@@ -23,9 +23,8 @@ Ice.Warn.Connections=1
 # 2 = like 1, but more detailed
 # 3 = like 2, but also trace data transfer
 #
-#Ice.Trace.Network=1
+Ice.Trace.Network=2
 
-Hostname = "Sebas"
 #
 # Protocol Tracing
 #

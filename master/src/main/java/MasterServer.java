@@ -13,7 +13,7 @@ public class MasterServer {
                 System.err.println("too many arguments");
                 status = 1;
             } else {
-                ObjectAdapter adapter = communicator.createObjectAdapter("MasterWorker.Master");
+                ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(new MasterController(), Util.stringToIdentity("subject"));
                 adapter.activate();
                 System.out.println("Servidor listo.");

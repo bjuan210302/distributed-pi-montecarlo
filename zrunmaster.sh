@@ -1,3 +1,4 @@
 #!/bin/bash
 
-java -jar server/build/libs/server.jar
+./gradlew build
+java -jar master/build/libs/master.jar
