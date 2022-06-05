@@ -1,4 +1,7 @@
 import Montecarlo.*;
+
+import java.util.LinkedList;
+
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.ObjectPrx;
@@ -8,6 +11,7 @@ public final class WorkerController implements Worker
 {
 
     private MasterPrx master;
+    private PointGenerator generator;
 
     public WorkerController(ObjectAdapter iceAdapter, MasterPrx master) {
         ObjectPrx receiverO = iceAdapter.add(this, Util.stringToIdentity("worker"));
@@ -17,15 +21,33 @@ public final class WorkerController implements Worker
         master.subscribe(receiver);
 
         this.master = master;
+        this.generator = new PointGenerator(this);
     }
 
     @Override
     public void update(boolean taskAvailable, Current current) {
-        // TODO if true get task if false stop everything
+        System.out.println("Update received from master, isTaskAvailable is " + taskAvailable);
+        if (taskAvailable)
+            work();
+        else {
+            this.generator.intentionalKillGen();
+            System.out.println("Generation killed");
+        }
     }
 
-    public void reportPoints(Point[] inside, Point[] outside) {
-        master.reportPartialResult(outside, inside);
+    public void reportPoints(LinkedList<Point> points) {
+        master.reportPartialResult(points);
+        work();
     }
 
+    private void work() {
+        Task t = this.master.getTask();
+        this.generator.startGeneration(t);
+    }
+
+    public void onShutDown() {
+        this.generator.intentionalKillGen();
+        // Report points
+        System.out.println("Generation killed by shutdown");
+    }
 }

@@ -1,7 +1,3 @@
-//
-// Copyright (c) ZeroC, Inc. All rights reserved.
-//
-
 #pragma once
 
 module Montecarlo
@@ -9,11 +5,16 @@ module Montecarlo
     class Point {
         double x;
         double y;
+        bool isInside;
     };
+    ["java:type:java.util.LinkedList<Point>:java.util.LinkedList<Point>"]
+    sequence<Point> OrderedPointList;
 
     class Task {
         int numberOfPointsToGenerate;
         int epsilonExponent;
+        long seed;
+        long seedOffset;
     };
 
     sequence<Point> PointSequence;
@@ -35,7 +36,7 @@ module Montecarlo
     interface Master extends Subject
     {
         Task getTask();
-        void reportPartialResult(PointSequence outside, PointSequence inside);
+        void reportPartialResult(OrderedPointList points);
     };
 
 }

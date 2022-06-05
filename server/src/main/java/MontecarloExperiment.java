@@ -1,45 +1,36 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import Montecarlo.Point;
 
 public class MontecarloExperiment {
-    
+
     private MasterController master;
-    private List<Point> approvedPointsInside;
-    private List<Point> approvedPointsOutside;
-    private int remainingPoints;
-    private double currentPi;
+    private PointStore pointStore;
+    private int totalPointsInside;
+    private int totalPointsOutside;
+    private int targetPoints;
 
-    public MontecarloExperiment() {
-        this.approvedPointsInside = new ArrayList<Point>();
-        this.approvedPointsOutside = new ArrayList<Point>();
-    }
-    
-    public void initNumberOfPoints(int n) {
-        this.remainingPoints = n;
+    public void initExperiment(int targetPoints, int epsilonExp) {
+        this.targetPoints = targetPoints;
+        this.pointStore = new PointStore(this);
+        this.pointStore.initStore(targetPoints, epsilonExp);
     }
 
-    public double getCurrentPi() {
-        return this.currentPi;
+    public void processNewPoints(LinkedList<Point> points) {
+        pointStore.enqueuToProcess(points);
     }
 
-    public List<Point> getApprovedPointsInside(){
-        return this.approvedPointsInside;
+    public void updateState(int totalPointsInside, int totalPointsOutside, int totalPoints) {
+        this.totalPointsInside = totalPointsInside;
+        this.totalPointsOutside = totalPointsOutside;
+
+        if (this.targetPoints == totalPoints)
+            master.notifyTargetReached();
+
+        master.updateState(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
     }
 
-    public List<Point> getApprovedPointsOutside(){
-        return this.approvedPointsOutside;
-    }
-
-    public void proccessApprovedPoints(List<Point> inside, List<Point> outside) {
-        if (inside.size() + outside.size() > remainingPoints) {
-            // master set points left zero
-        }
-        this.approvedPointsInside.addAll(inside);
-        this.approvedPointsOutside.addAll(outside);
-        this.remainingPoints -= inside.size() + outside.size();
-        // master set points left
-        // calculate new pi based on approved points arrays sizes
+    private double getPiEstimation() {
+        return 4 * (totalPointsInside / (totalPointsInside + totalPointsOutside));
     }
 }

@@ -15,10 +15,6 @@ public class WorkerInitializer {
             } else {
                 status = run(communicator);
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                communicator.destroy();
-                System.out.println("Shutting down");
-            }));
         }
 
         System.exit(status);
@@ -34,6 +30,12 @@ public class WorkerInitializer {
 
         ObjectAdapter adapter = communicator.createObjectAdapter("MasterWorker.Worker");
         WorkerController workerController = new WorkerController(adapter, master);
+        System.out.println("Worker is ready. Waiting for isTaskAvailable");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            communicator.destroy();
+            System.out.println("Shutting down");
+            workerController.onShutDown();
+        }));
         communicator.waitForShutdown();
 
         return 0;

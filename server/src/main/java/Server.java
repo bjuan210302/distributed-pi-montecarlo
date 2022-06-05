@@ -1,6 +1,5 @@
 import java.util.*;
 import com.zeroc.Ice.*;
-import Montecarlo.*;
 public class Server {
     public static void main(String[] args) {
         int status = 0;

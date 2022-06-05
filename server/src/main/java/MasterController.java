@@ -3,14 +3,18 @@ import Montecarlo.*;
 import com.zeroc.Ice.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public final class MasterController implements Master
 {
+    private MontecarloExperiment experiment;
     private List<WorkerPrx> workers;
-    private int remainingPoints;
-    private int epsilonExponent;
+    private int epsilonExp;
     private int pointsPerTask;
+    private long seed;
+    private long seedOffset;
     private boolean isTaskAvailable;
+    private int remainingPoints;
 
     public MasterController() {
         this.workers = new ArrayList<WorkerPrx>();
@@ -18,38 +22,40 @@ public final class MasterController implements Master
     @Override
     public void subscribe(WorkerPrx worker, Current current) {
         this.workers.add(worker);
+        worker.update(isTaskAvailable);
     }
 
     @Override
     public Task getTask(Current current) {
-        //Naive implementation
-        return new Task(pointsPerTask, epsilonExponent);
-
         //TODO: Consider pointsPerTask > remainingPoints
+        Task t = new Task(pointsPerTask, epsilonExp, seed, seedOffset);
+        seedOffset++;
+        return t;
     }
 
     @Override
-    public void reportPartialResult(Point[] outside, Point[] inside, Current current) {
-        // TODO Auto-generated method stub
-        
+    public void reportPartialResult(LinkedList<Point> points, Current current) {
+        experiment.processNewPoints(points);
     }
 
-    public void initCalculation(int numberOfPoints, int epsilonExponent) {
-        this.remainingPoints = numberOfPoints;
-        this.epsilonExponent = epsilonExponent;
-        setTaskAvailableAndNotify(true);
+    public void initCalculation(int targetPoints, int epsilonExp) {
+        this.experiment = new MontecarloExperiment();
+        this.experiment.initExperiment(targetPoints, epsilonExp);
+        this.remainingPoints = targetPoints;
+        this.epsilonExp = epsilonExp;
+        updateAll(true);
     }
 
-    public void setPointsLeft(int n) {
-        if (n == 0)
-            setTaskAvailableAndNotify(false);
-        else
-            this.remainingPoints = n;
+    public void updateState(int insidePoints, int outsidePoints, int processedPoints, double pi) {
+        // TODO: This is sent to the GUI
     }
 
-    private void setTaskAvailableAndNotify(boolean isTaskAvailable) {
-        this.isTaskAvailable = isTaskAvailable;
+    public void notifyTargetReached() {
+        this.isTaskAvailable = false;
+        updateAll(false);
+    }
 
+    private void updateAll(boolean isTaskAvailable) {
         //TODO: Should be done in object called WorkerNotifier
         new Thread(() -> {
             for (WorkerPrx worker : workers) {
@@ -57,5 +63,4 @@ public final class MasterController implements Master
             }
         }).start();
     }
-
 }
