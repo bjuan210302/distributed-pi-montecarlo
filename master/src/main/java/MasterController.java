@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 public final class MasterController implements Master
 {
-    private long POINTS_PER_TASK = (long) Math.pow(10, 8);
+    private long POINTS_PER_TASK = (long) Math.pow(10, 7);
 
     private MontecarloExperiment experiment;
     private List<WorkerPrx> workers;
@@ -29,11 +29,10 @@ public final class MasterController implements Master
 
     @Override
     public Task getTask(Current current) {
-        System.out.println("Trying to create new task...");
         //TODO: Consider pointsPerTask > remainingPoints
         Task t = new Task(POINTS_PER_TASK, epsilonExp, seed, seedOffset);
-        System.out.println("New task created");
         seedOffset++;
+        System.out.println("New task dispatched. offset: " + seedOffset);
         return t;
     }
 
@@ -75,6 +74,7 @@ public final class MasterController implements Master
             for (WorkerPrx worker : workers) {
                 worker.ice_oneway().update(isTaskAvailable);
             }
+            System.out.println("Ended updateAll with val: " + isTaskAvailable);
         }).start();
     }
 }

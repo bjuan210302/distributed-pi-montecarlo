@@ -26,9 +26,7 @@ public class PointGenerator {
 
     private void generate(long target, Random random) {
         System.out.println("Generation thread started. Generating...");
-        long half = target / 2;
-        System.out.println("Half of points to generate is: " + half);
-        for (long i = 0; i < target && this.taskIsAlive; i++) {
+        for (long i = 1; i <= target && this.taskIsAlive; i++) {
             double x = random.nextDouble();
             double y = random.nextDouble();
             boolean isInside = (x*x) + (y*y) <= 1;
@@ -42,13 +40,10 @@ public class PointGenerator {
         }
         System.out.println("Done generating.");
 
-        // Don't report if task was killed.
         if(this.taskIsAlive) {
-            System.out.println("Reporting points to Worker");
-            worker.reportPoints(generatedPoints);
+            worker.notifyNoWork();
         }
         generatedPoints.clear();
-        worker.notifyNoWork();
     }
 
     /**
@@ -56,8 +51,7 @@ public class PointGenerator {
      * Safe to kil even when task is not alive.
      */
     public LinkedList<Point> intentionalKillTask() {
-        if (this.taskIsAlive)
-            this.taskIsAlive = false;
+        this.taskIsAlive = false;
         return this.generatedPoints;
     }
 }

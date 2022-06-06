@@ -47,7 +47,7 @@ public class PointStore {
     }
 
     public void enqueuToProcess(LinkedList<Point> points) {
-        if (this.totalPointCounter == this.targetPoints)
+        if (this.totalPointCounter.equals(this.targetPoints))
             return;
 
         this.toCheckQueue.add(new Result(points));
@@ -62,10 +62,8 @@ public class PointStore {
     private void check() {
         this.isChecking = true;
         Result currentResult = toCheckQueue.poll();
-        System.out.println("Thread successfully started. First job is " + currentResult);
 
         while (currentResult != null) {
-
             for (Point p : currentResult.points) {
                 this.allPoints.add(p);
                 this.totalPointCounter = this.totalPointCounter.add(BigInteger.ONE);
@@ -82,19 +80,17 @@ public class PointStore {
                 // if (!pointIsNew)
                 //     this.repeatedCounter++;
 
-                if (this.totalPointCounter == this.targetPoints) {
+                if (this.totalPointCounter.equals(this.targetPoints)) {
                     toCheckQueue.clear();
                     break;
                 }
             }
-
-            System.out.println("From checker thread: Total is: " + this.totalPointCounter);
             this.experiment.updateState(this.insideCounter, this.outsideCounter, this.totalPointCounter, this.repeatedCounter);
             currentResult = toCheckQueue.poll();
         }
 
-        System.out.println("No more results to check");
         this.isChecking = false;
+        System.out.println("Checker Thread ended.");
     }
 
 }

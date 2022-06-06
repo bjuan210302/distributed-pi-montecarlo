@@ -28,8 +28,10 @@ public class MontecarloExperiment {
         this.totalPointsInside = totalPointsInside;
         this.totalPointsOutside = totalPointsOutside;
 
-        if (this.targetPoints == totalPoints)
+        System.out.println("Montecarlo updateState: total=" + totalPoints + " target=" + this.targetPoints);
+        if (this.targetPoints.equals(totalPoints)){
             master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
+        }
         else
             master.updateState(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
     }
