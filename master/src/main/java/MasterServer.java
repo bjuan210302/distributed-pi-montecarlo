@@ -14,9 +14,12 @@ public class MasterServer {
                 status = 1;
             } else {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
-                adapter.add(new MasterController(), Util.stringToIdentity("subject"));
+                MasterController masterController = new MasterController();
+                adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
                 System.out.println("Servidor listo.");
+                Controller guiController = new Controller();
+                guiController.setMasterController(masterController);
                 communicator.waitForShutdown();
             }
         }
