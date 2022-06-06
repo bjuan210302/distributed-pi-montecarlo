@@ -26,8 +26,10 @@ public final class WorkerController implements Worker {
     @Override
     public void update(boolean taskAvailable, Current current) {
         System.out.println("Update received from master, isTaskAvailable is " + taskAvailable);
-        if (taskAvailable)
+        if (taskAvailable) {
+            System.out.println("About to work()");
             work();
+        }
         else {
             this.generator.intentionalKillTask();
             System.out.println("Generation killed");
@@ -35,15 +37,19 @@ public final class WorkerController implements Worker {
     }
 
     public void reportPoints(LinkedList<Point> points) {
-        master.reportPartialResult(points);
-        work();
+        master.ice_oneway().ice_compress(true).reportPartialResult(points);
     }
 
     private void work() {
+        System.out.println("Working, getting task...");
         Task t = this.master.getTask();
+        System.out.println("Task fetch succeeded");
         this.generator.startGeneration(t);
     }
 
+    public void notifyNoWork() {
+        work();
+    }
     public void onShutDown() {
         this.generator.intentionalKillTask();
         // Report points

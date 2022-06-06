@@ -19,6 +19,9 @@ Ice.Warn.Connections=1
 #
 # Ice.Trace.Network=2
 
+# Allowing more space for parameters in async methods.
+Ice.MessageSizeMax=16000000
+
 #
 # Protocol Tracing
 #

@@ -7,11 +7,12 @@ module Montecarlo
         double y;
         bool isInside;
     };
+
     ["java:type:java.util.LinkedList<Point>:java.util.LinkedList<Point>"]
     sequence<Point> OrderedPointList;
 
     class Task {
-        int numberOfPointsToGenerate;
+        long target;
         int epsilonExponent;
         long seed;
         long seedOffset;

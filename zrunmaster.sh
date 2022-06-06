@@ -1,4 +1,4 @@
 #!/bin/bash
 
 ./gradlew build
-java -jar master/build/libs/master.jar
+java -Xmx8g -jar master/build/libs/master.jar

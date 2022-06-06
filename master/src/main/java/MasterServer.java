@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.*;
 import com.zeroc.Ice.*;
 public class MasterServer {
@@ -13,12 +14,17 @@ public class MasterServer {
                 System.err.println("too many arguments");
                 status = 1;
             } else {
+                MasterController masterController = new MasterController();
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
-                adapter.add(new MasterController(), Util.stringToIdentity("subject"));
+                adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                System.out.println("Servidor listo.");
+                FileManager.readFile();
+                System.out.println("Servidor listo. Empezar exp");
+                masterController.initCalculation(FileManager.getExperiment(8));
                 communicator.waitForShutdown();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         System.exit(status);

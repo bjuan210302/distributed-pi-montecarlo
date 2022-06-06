@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.LinkedList;
 
 import Montecarlo.Point;
@@ -6,11 +7,14 @@ public class MontecarloExperiment {
 
     private MasterController master;
     private PointStore pointStore;
-    private int totalPointsInside;
-    private int totalPointsOutside;
-    private int targetPoints;
+    private long totalPointsInside;
+    private long totalPointsOutside;
+    private BigInteger targetPoints;
 
-    public void initExperiment(int targetPoints, int epsilonExp) {
+    public MontecarloExperiment(MasterController master) {
+        this.master = master;
+    }
+    public void initExperiment(BigInteger targetPoints, int epsilonExp) {
         this.targetPoints = targetPoints;
         this.pointStore = new PointStore(this);
         this.pointStore.initStore(targetPoints, epsilonExp);
@@ -20,17 +24,17 @@ public class MontecarloExperiment {
         pointStore.enqueuToProcess(points);
     }
 
-    public void updateState(int totalPointsInside, int totalPointsOutside, int totalPoints, int repeatedPoints) {
+    public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints, long repeatedPoints) {
         this.totalPointsInside = totalPointsInside;
         this.totalPointsOutside = totalPointsOutside;
 
         if (this.targetPoints == totalPoints)
-            master.notifyTargetReached();
-
-        master.updateState(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
+            master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
+        else
+            master.updateState(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
     }
 
     private double getPiEstimation() {
-        return 4 * (totalPointsInside / (totalPointsInside + totalPointsOutside));
+        return 4 * ((double)totalPointsInside / (double)(totalPointsInside + totalPointsOutside));
     }
 }

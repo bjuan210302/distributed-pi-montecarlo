@@ -8,7 +8,7 @@ Master.Direct=subject:default -h hgrid14 -p 9001
 # The client creates one single object adapter with the name
 # "MasterWorker.Worker".
 #
-Worker.Endpoints=default -h hgrid13
+Worker.Endpoints=default -h hgrid13 -p 9002
 
 #
 # Warn about connection exceptions
