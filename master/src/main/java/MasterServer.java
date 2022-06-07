@@ -1,6 +1,13 @@
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.*;
-import com.zeroc.Ice.*;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.Util;
+
 public class MasterServer {
     public static void main(String[] args) {
         int status = 0;
@@ -18,15 +25,41 @@ public class MasterServer {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                FileManager.readFile();
-                System.out.println("Servidor listo. Empezar exp");
-                masterController.initCalculation(FileManager.getExperiment(8));
                 communicator.waitForShutdown();
+                System.out.println("Servidor listo.");
+                new Thread(() -> {
+                    menuLoop(masterController);
+                }).start();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         System.exit(status);
+    }
+
+    public static void menuLoop(MasterController masterController) {
+        try {
+            FileManager.readFile();
+        } catch (IOException e1) {
+            System.out.println("ERROR ON READING PRE CONFIGURED EXPERIMENTS");
+            e1.printStackTrace();
+        }
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String input = null;
+        do {
+            try {
+                input = in.readLine();
+
+                if (input.equals("g")) {
+                   // Start GUI
+                }
+
+                if (input.equals("at")) {
+                    masterController.setupAutomaticExperiment(FileManager.experiments, 10);
+                    masterController.automaticStart();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } while (!input.equals("x"));
     }
 }

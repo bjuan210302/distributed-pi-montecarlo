@@ -20,7 +20,7 @@ public class PointStore {
     private Queue<Result> toCheckQueue;
     // private TreeSet<Point> inside;
     // private TreeSet<Point> outside;
-    private LinkedList<Point> allPoints;
+    // private LinkedList<Point> allPoints;
     private long insideCounter;
     private long outsideCounter;
     private long repeatedCounter;
@@ -37,7 +37,7 @@ public class PointStore {
     }
 
     public void initStore(BigInteger targetPoints, int epsilonExp) {
-        this.allPoints = new LinkedList<Point>();
+        // this.allPoints = new LinkedList<Point>();
         this.totalPointCounter = BigInteger.ZERO;
         // Comparator<Point> c = new PointComparator(Math.pow(10, this.epsilonExp));
         // this.inside = new TreeSet<Point>(c);
@@ -65,7 +65,7 @@ public class PointStore {
 
         while (currentResult != null) {
             for (Point p : currentResult.points) {
-                this.allPoints.add(p);
+                // this.allPoints.add(p);
                 this.totalPointCounter = this.totalPointCounter.add(BigInteger.ONE);
 
                 // boolean pointIsNew = false;
