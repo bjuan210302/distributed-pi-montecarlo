@@ -32,7 +32,7 @@ public class PointGenerator {
             boolean isInside = (x*x) + (y*y) <= 1;
             this.generatedPoints.add(new Point(x, y, isInside));
 
-            if (i > 0 && i % 1000000 == 0){
+            if (i > 0 && i % 5000000 == 0){
                 System.out.println("Reached " + i + " points. Reporting points and reseting list");
                 worker.reportPoints(generatedPoints);
                 generatedPoints.clear();
@@ -53,5 +53,9 @@ public class PointGenerator {
     public LinkedList<Point> intentionalKillTask() {
         this.taskIsAlive = false;
         return this.generatedPoints;
+    }
+
+    public boolean isWorking() {
+        return this.taskIsAlive;
     }
 }

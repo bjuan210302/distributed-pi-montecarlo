@@ -53,7 +53,6 @@ public class PointStore {
         this.toCheckQueue.add(new Result(points));
 
         if (!this.isChecking) {
-            System.out.println("Store not cheecking. Starting thread...");
             this.processerThread = new Thread(() -> check());
             this.processerThread.start();
         }
@@ -90,7 +89,6 @@ public class PointStore {
         }
 
         this.isChecking = false;
-        System.out.println("Checker Thread ended.");
     }
 
 }

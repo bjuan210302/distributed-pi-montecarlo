@@ -6,18 +6,17 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-public final class MasterController implements Master
-{
+public final class MasterController implements Master {
     private long POINTS_PER_TASK = (long) Math.pow(10, 7);
 
     private MontecarloExperiment experiment;
-    
+
     // Experiment vars
     private long startTime;
     private int targetPointsExponent;
     private int epsilonExp;
     private long seed;
-    
+
     // Management vars
     private List<WorkerPrx> workers;
     private long seedOffset;
@@ -33,6 +32,7 @@ public final class MasterController implements Master
     public MasterController() {
         this.workers = new ArrayList<WorkerPrx>();
     }
+
     @Override
     public void subscribe(WorkerPrx worker, Current current) {
         this.workers.add(worker);
@@ -75,23 +75,30 @@ public final class MasterController implements Master
         this.targetPointsExponent = targetPointsExponent;
         this.epsilonExp = epsilonExp;
         this.seed = seed;
+        this.seedOffset = 0;
         this.experiment = new MontecarloExperiment(this);
         this.experiment.initExperiment(BigInteger.TEN.pow(targetPointsExponent), epsilonExp);
         this.isTaskAvailable = true;
         updateAll(isTaskAvailable);
     }
 
-    public void updateState(long insidePoints, long outsidePoints, BigInteger processedPoints, double pi) {
-        System.out.println("New update. Inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi);
+    public void updateState(long insidePoints, long outsidePoints, BigInteger processedPoints,
+            BigInteger remaining, double pi) {
+        System.out.println(
+                "New update. Inside=" + insidePoints +
+                        " outside=" + outsidePoints + " total=" + processedPoints +
+                        " remaining=" + remaining +
+                        " pi=" + pi);
     }
 
     public void notifyTargetReached(long insidePoints, long outsidePoints, BigInteger processedPoints, double pi) {
         this.isTaskAvailable = false;
         updateAll(isTaskAvailable);
         System.out.println("Target reached. Results were:");
-        System.out.println("inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi);
+        System.out.println(
+                "inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi);
 
-        long secondsElapsed = (System.currentTimeMillis() - startTime)/1000;
+        long secondsElapsed = (System.currentTimeMillis() - startTime) / 1000;
         FileManager.writeOnReport(targetPointsExponent, secondsElapsed, workers.size(), pi);
 
         if (this.isAutomatedExperiment)
@@ -109,6 +116,7 @@ public final class MasterController implements Master
         this.currentExperiment = experiments.poll();
         automaticNext();
     }
+
     public void automaticNext() {
         if (this.expCounter < this.repetitionsPerExperiment) {
             this.expCounter++;
@@ -119,6 +127,8 @@ public final class MasterController implements Master
 
             if (this.currentExperiment != null)
                 automaticNext();
+            else
+                System.out.println("All experiments done. Please check resources/experiment-results.csv");
         }
     }
 }

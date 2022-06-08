@@ -25,11 +25,11 @@ public class MasterServer {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                communicator.waitForShutdown();
                 System.out.println("Servidor listo.");
                 new Thread(() -> {
                     menuLoop(masterController);
                 }).start();
+                communicator.waitForShutdown();
             }
         }
 
@@ -47,14 +47,15 @@ public class MasterServer {
         String input = null;
         do {
             try {
+                System.out.println("option >>");
                 input = in.readLine();
 
-                if (input.equals("g")) {
+                if (input.equals("gui")) {
                    // Start GUI
                 }
 
-                if (input.equals("at")) {
-                    masterController.setupAutomaticExperiment(FileManager.experiments, 10);
+                if (input.equals("auto")) {
+                    masterController.setupAutomaticExperiment(FileManager.experiments, 2);
                     masterController.automaticStart();
                 }
             } catch (IOException e) {
