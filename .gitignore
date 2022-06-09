@@ -6,3 +6,4 @@ build
 
 #VS code congif files
 .vscode
+*.class
