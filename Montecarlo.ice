@@ -32,6 +32,7 @@ module Montecarlo
     interface Subject
     {
         void subscribe(Worker* observer);
+        void unsubscribe(Worker* observer);
     };
 
     interface Master extends Subject

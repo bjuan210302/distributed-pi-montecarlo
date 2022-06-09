@@ -9,18 +9,19 @@ import com.zeroc.Ice.Util;
 public final class WorkerController implements Worker {
 
     private MasterPrx master;
+    WorkerPrx selfPrx;
     private PointGenerator generator;
 
     public WorkerController(ObjectAdapter iceAdapter, MasterPrx master) {
         iceAdapter.add(this, Util.stringToIdentity("worker"));
         iceAdapter.activate();
 
-        WorkerPrx receiver = WorkerPrx
+        selfPrx = WorkerPrx
                 .uncheckedCast(iceAdapter.createProxy(com.zeroc.Ice.Util.stringToIdentity("worker")));
 
         this.master = master;
         this.generator = new PointGenerator(this);
-        master.subscribe(receiver);
+        master.subscribe(selfPrx);
     }
 
     @Override
@@ -52,7 +53,12 @@ public final class WorkerController implements Worker {
     }
     public void onShutDown() {
         LinkedList<Point> saved = this.generator.intentionalKillTask();
-        System.out.println("Generation killed by shutdown. Reporting " + saved.size() + " saved points." );
-        master.ice_oneway().ice_compress(true).reportPartialResult(saved);
+        System.out.println("Killed by shutdown.");
+        if (saved.size() > 0) {
+            System.out.println("Points present. Reporting " + saved.size() + " saved points to Master." );
+            master.ice_oneway().ice_compress(true).reportPartialResult(saved);
+        }
+        System.out.println("Unsubscribing from Master...");
+        master.unsubscribe(selfPrx);
     }
 }

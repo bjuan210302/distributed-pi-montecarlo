@@ -37,7 +37,13 @@ public final class MasterController implements Master {
     public void subscribe(WorkerPrx worker, Current current) {
         this.workers.add(worker);
         worker.ice_oneway().update(isTaskAvailable);
-        System.out.println("Ended subscribe.");
+        System.out.println("New worker. Total now: " + workers.size());
+    }
+
+    @Override
+    public void unsubscribe(WorkerPrx worker, Current current) {
+        this.workers.remove(worker);
+        System.out.println("A Worker left. Total now " + workers.size());
     }
 
     private void updateAll(boolean isTaskAvailable) {
@@ -59,7 +65,7 @@ public final class MasterController implements Master {
 
     @Override
     public void reportPartialResult(LinkedList<Point> points, Current current) {
-        experiment.processNewPoints(points);
+        new Thread(() -> experiment.processNewPoints(points)).start();
     }
 
     public void initCalculation(int targetPointsExponent, int epsilonExp, long seed) {
@@ -101,8 +107,16 @@ public final class MasterController implements Master {
         long secondsElapsed = (System.currentTimeMillis() - startTime) / 1000;
         FileManager.writeOnReport(targetPointsExponent, secondsElapsed, workers.size(), pi);
 
-        if (this.isAutomatedExperiment)
+        if (this.isAutomatedExperiment) {
+            System.out.println("Taking 3000 millis to catch up...");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                System.out.println("Error while sleep(3000)");
+                e.printStackTrace();
+            }
             automaticNext();
+        }
     }
 
     public void setupAutomaticExperiment(LinkedList<FileManager.Experiment> experiments, int repetitionsPerExperiment) {
@@ -118,6 +132,7 @@ public final class MasterController implements Master {
     }
 
     public void automaticNext() {
+        System.out.println("Starting experiment 10^" + this.currentExperiment.targetPointsExponent);
         if (this.expCounter < this.repetitionsPerExperiment) {
             this.expCounter++;
             initCalculation(this.currentExperiment);
@@ -125,9 +140,10 @@ public final class MasterController implements Master {
             this.expCounter = 0;
             this.currentExperiment = experiments.poll();
 
-            if (this.currentExperiment != null)
+            if (this.currentExperiment != null) {
+
                 automaticNext();
-            else
+            } else
                 System.out.println("All experiments done. Please check resources/experiment-results.csv");
         }
     }
