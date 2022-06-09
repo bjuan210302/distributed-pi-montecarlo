@@ -55,7 +55,7 @@ public class MasterServer {
                 }
 
                 if (input.equals("auto")) {
-                    masterController.setupAutomaticExperiment(FileManager.experiments, 2);
+                    masterController.setupAutomaticExperiment(FileManager.experiments, 10);
                     masterController.automaticStart();
                 }
             } catch (IOException e) {

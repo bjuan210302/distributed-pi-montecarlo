@@ -7,8 +7,6 @@ public class MontecarloExperiment {
 
     private MasterController master;
     private PointStore pointStore;
-    private long totalPointsInside;
-    private long totalPointsOutside;
     private BigInteger targetPoints;
 
     public MontecarloExperiment(MasterController master) {
@@ -27,17 +25,16 @@ public class MontecarloExperiment {
 
     public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints,
             long repeatedPoints) {
-        this.totalPointsInside = totalPointsInside;
-        this.totalPointsOutside = totalPointsOutside;
 
         if (this.targetPoints.equals(totalPoints)) {
-            master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
+            master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints,
+                    getPiEstimation(totalPointsInside, totalPointsOutside));
         } else
             master.updateState(totalPointsInside, totalPointsOutside, totalPoints, targetPoints.subtract(totalPoints),
-                    getPiEstimation());
+                    getPiEstimation(totalPointsInside, totalPointsOutside));
     }
 
-    private double getPiEstimation() {
+    private double getPiEstimation(long totalPointsInside, long totalPointsOutside) {
         return 4 * ((double) totalPointsInside / (double) (totalPointsInside + totalPointsOutside));
     }
 }
