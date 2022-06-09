@@ -30,9 +30,9 @@ public final class WorkerController implements Worker {
             System.out.println("About to work()");
             work();
         }
-        else {
+        else if (generator.isWorking()) {
             this.generator.intentionalKillTask();
-            System.out.println("Generation killed");
+            System.out.println("Generation stopped.");
         }
     }
 
@@ -41,9 +41,9 @@ public final class WorkerController implements Worker {
     }
 
     private void work() {
-        System.out.println("Working, getting task...");
+        System.out.println("Getting task...");
         Task t = this.master.getTask();
-        System.out.println("Task fetch succeeded");
+        System.out.println("Task fetched ssuccesfully.");
         this.generator.startGeneration(t);
     }
 
@@ -51,8 +51,8 @@ public final class WorkerController implements Worker {
         work();
     }
     public void onShutDown() {
-        this.generator.intentionalKillTask();
-        // Report points
-        System.out.println("Generation killed by shutdown");
+        LinkedList<Point> saved = this.generator.intentionalKillTask();
+        System.out.println("Generation killed by shutdown. Reporting " + saved.size() + " saved points." );
+        master.ice_oneway().ice_compress(true).reportPartialResult(saved);
     }
 }

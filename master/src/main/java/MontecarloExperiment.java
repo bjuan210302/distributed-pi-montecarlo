@@ -7,13 +7,12 @@ public class MontecarloExperiment {
 
     private MasterController master;
     private PointStore pointStore;
-    private long totalPointsInside;
-    private long totalPointsOutside;
     private BigInteger targetPoints;
 
     public MontecarloExperiment(MasterController master) {
         this.master = master;
     }
+
     public void initExperiment(BigInteger targetPoints, int epsilonExp) {
         this.targetPoints = targetPoints;
         this.pointStore = new PointStore(this);
@@ -24,19 +23,18 @@ public class MontecarloExperiment {
         pointStore.enqueuToProcess(points);
     }
 
-    public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints, long repeatedPoints) {
-        this.totalPointsInside = totalPointsInside;
-        this.totalPointsOutside = totalPointsOutside;
+    public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints,
+            long repeatedPoints) {
 
-        System.out.println("Montecarlo updateState: total=" + totalPoints + " target=" + this.targetPoints);
-        if (this.targetPoints.equals(totalPoints)){
-            master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
-        }
-        else
-            master.updateState(totalPointsInside, totalPointsOutside, totalPoints, getPiEstimation());
+        if (this.targetPoints.equals(totalPoints)) {
+            master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints,
+                    getPiEstimation(totalPointsInside, totalPointsOutside));
+        } else
+            master.updateState(totalPointsInside, totalPointsOutside, totalPoints, targetPoints.subtract(totalPoints),
+                    getPiEstimation(totalPointsInside, totalPointsOutside));
     }
 
-    private double getPiEstimation() {
-        return 4 * ((double)totalPointsInside / (double)(totalPointsInside + totalPointsOutside));
+    private double getPiEstimation(long totalPointsInside, long totalPointsOutside) {
+        return 4 * ((double) totalPointsInside / (double) (totalPointsInside + totalPointsOutside));
     }
 }

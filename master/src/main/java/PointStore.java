@@ -20,7 +20,7 @@ public class PointStore {
     private Queue<Result> toCheckQueue;
     // private TreeSet<Point> inside;
     // private TreeSet<Point> outside;
-    private LinkedList<Point> allPoints;
+    // private LinkedList<Point> allPoints;
     private long insideCounter;
     private long outsideCounter;
     private long repeatedCounter;
@@ -37,7 +37,7 @@ public class PointStore {
     }
 
     public void initStore(BigInteger targetPoints, int epsilonExp) {
-        this.allPoints = new LinkedList<Point>();
+        // this.allPoints = new LinkedList<Point>();
         this.totalPointCounter = BigInteger.ZERO;
         // Comparator<Point> c = new PointComparator(Math.pow(10, this.epsilonExp));
         // this.inside = new TreeSet<Point>(c);
@@ -53,7 +53,6 @@ public class PointStore {
         this.toCheckQueue.add(new Result(points));
 
         if (!this.isChecking) {
-            System.out.println("Store not cheecking. Starting thread...");
             this.processerThread = new Thread(() -> check());
             this.processerThread.start();
         }
@@ -65,7 +64,7 @@ public class PointStore {
 
         while (currentResult != null) {
             for (Point p : currentResult.points) {
-                this.allPoints.add(p);
+                // this.allPoints.add(p);
                 this.totalPointCounter = this.totalPointCounter.add(BigInteger.ONE);
 
                 // boolean pointIsNew = false;
@@ -90,7 +89,6 @@ public class PointStore {
         }
 
         this.isChecking = false;
-        System.out.println("Checker Thread ended.");
     }
 
 }

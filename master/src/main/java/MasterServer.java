@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,14 +24,42 @@ public class MasterServer {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                System.out.println("Servidor listo. Empezar exp");
-                GUIController guiController = new GUIController();
-                guiController.setMasterController(masterController);
-                guiController.run();
+                System.out.println("Servidor listo.");
+                new Thread(() -> {
+                    menuLoop(masterController);
+                }).start();
                 communicator.waitForShutdown();
             }
         }
 
         System.exit(status);
+    }
+
+    public static void menuLoop(MasterController masterController) {
+        try {
+            FileManager.readFile();
+        } catch (IOException e1) {
+            System.out.println("ERROR ON READING PRE CONFIGURED EXPERIMENTS");
+            e1.printStackTrace();
+        }
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+        String input = null;
+        do {
+            try {
+                System.out.println("option >>");
+                input = in.readLine();
+
+                if (input.equals("gui")) {
+                   // Start GUI
+                }
+
+                if (input.equals("auto")) {
+                    masterController.setupAutomaticExperiment(FileManager.experiments, 10);
+                    masterController.automaticStart();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } while (!input.equals("x"));
     }
 }
