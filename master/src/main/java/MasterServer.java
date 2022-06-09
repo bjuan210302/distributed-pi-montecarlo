@@ -1,6 +1,9 @@
-import java.io.IOException;
-import java.util.*;
-import com.zeroc.Ice.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.zeroc.Ice.Communicator;
+import com.zeroc.Ice.ObjectAdapter;
+import com.zeroc.Ice.Util;
 public class MasterServer {
     public static void main(String[] args) {
         int status = 0;
@@ -18,13 +21,12 @@ public class MasterServer {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                FileManager.readFile();
                 System.out.println("Servidor listo. Empezar exp");
-                masterController.initCalculation(FileManager.getExperiment(8));
+                GUIController guiController = new GUIController();
+                guiController.setMasterController(masterController);
+                guiController.run();
                 communicator.waitForShutdown();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         System.exit(status);

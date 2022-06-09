@@ -34,12 +34,12 @@ public class GUIController implements Runnable {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!gui.getPoints().getText().isBlank() && !gui.getSeed().getText().isBlank() && !gui.getEpsilon().getText().isBlank()) {
+                if(!gui.getPoints().getText().isEmpty() && !gui.getSeed().getText().isEmpty() && !gui.getEpsilon().getText().isEmpty()) {
                     int targetPointsExponent = Integer.parseInt(gui.getPoints().getText());
                     int epsilonExp = Integer.parseInt(gui.getEpsilon().getText());
                     int seed = Integer.parseInt(gui.getSeed().getText());
 
-                    masterController.initCalculation(targetPointsExponent, epsilonExp, seed)
+                    masterController.initCalculation(targetPointsExponent, epsilonExp, seed);
                 }
             }
             

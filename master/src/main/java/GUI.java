@@ -1,5 +1,3 @@
-package monolithic.pi.montecarlo;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
