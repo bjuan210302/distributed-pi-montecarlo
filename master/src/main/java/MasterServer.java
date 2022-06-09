@@ -24,9 +24,11 @@ public class MasterServer {
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
+                GUIController gc = new GUIController();
+                gc.setMasterController(masterController);
                 System.out.println("Servidor listo.");
                 new Thread(() -> {
-                    menuLoop(masterController);
+                    menuLoop(masterController, gc);
                 }).start();
                 communicator.waitForShutdown();
             }
@@ -35,7 +37,7 @@ public class MasterServer {
         System.exit(status);
     }
 
-    public static void menuLoop(MasterController masterController) {
+    public static void menuLoop(MasterController masterController, GUIController gc) {
         try {
             FileManager.readFile();
         } catch (IOException e1) {
@@ -50,7 +52,7 @@ public class MasterServer {
                 input = in.readLine();
 
                 if (input.equals("gui")) {
-                   // Start GUI
+                   gc.run();
                 }
 
                 if (input.equals("auto")) {
