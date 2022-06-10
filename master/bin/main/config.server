@@ -2,7 +2,7 @@
 # MasterServer creates one single object adapter with the name
 # "MasterWorker.Master"
 #
-Master.Endpoints=default -h hgrid14 -p 9001
+Master.Endpoints=default -h localhost -p 9001
 
 #
 # Warn about connection exceptions

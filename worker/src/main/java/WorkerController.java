@@ -1,10 +1,11 @@
-import Montecarlo.*;
-
-import java.util.LinkedList;
-
 import com.zeroc.Ice.Current;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
+
+import Montecarlo.MasterPrx;
+import Montecarlo.Task;
+import Montecarlo.Worker;
+import Montecarlo.WorkerPrx;
 
 public final class WorkerController implements Worker {
 
@@ -36,8 +37,8 @@ public final class WorkerController implements Worker {
         }
     }
 
-    public void reportPoints(LinkedList<Point> points, long insideCounter, long outsideCounter) {
-        master.ice_compress(true).ice_oneway().reportPartialResult(points, insideCounter, outsideCounter);
+    public void reportPoints(long insideCounter, long outsideCounter) {
+        master.ice_compress(true).ice_oneway().reportPartialResult(insideCounter, outsideCounter);
     }
 
     private void work() {
@@ -56,13 +57,8 @@ public final class WorkerController implements Worker {
     }
 
     public void onShutDown() {
-        LinkedList<Point> saved = this.generator.intentionalKillTask();
+        this.generator.intentionalKillTask();
         System.out.println("Killed by shutdown.");
-        if (saved.size() > 0) {
-            // System.out.println("Points present. Reporting " + saved.size() + " saved
-            // points to Master." );
-            // master.ice_oneway().ice_compress(true).reportPartialResult(saved);
-        }
         System.out.println("Unsubscribing from Master...");
         master.ice_oneway().unsubscribe(selfPrx);
     }

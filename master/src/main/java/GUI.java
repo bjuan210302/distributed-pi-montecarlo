@@ -15,8 +15,8 @@ import javax.swing.table.DefaultTableModel;
 public class GUI extends JFrame {
 
     private JPanel content;
-    private JLabel lPoints, lSeed, lEpsilon;
-    private JTextField tfPoints, tfSeed, tfEpsilon;
+    private JLabel lPoints, lSeed;
+    private JTextField tfPoints, tfSeed;
     private JButton compute;
     private JScrollPane scrollPane;
     private JTable results;
@@ -48,15 +48,6 @@ public class GUI extends JFrame {
         tfPoints.setBounds(70, 50, 100, 20);
         content.add(tfPoints);
         tfPoints.setColumns(20);
-
-        lEpsilon = new JLabel("Epsilon Exponent:");
-        lEpsilon.setBounds(200, 30, 100, 15);
-        content.add(lEpsilon);
-
-        tfEpsilon = new JTextField();
-        tfEpsilon.setBounds(200, 50, 100, 20);
-        content.add(tfEpsilon);
-        tfEpsilon.setColumns(20);
 
         lSeed = new JLabel("Seed:");
         lSeed.setBounds(330, 30, 100, 15);
@@ -93,16 +84,6 @@ public class GUI extends JFrame {
         lExperiments.setBounds(430, 155, 130, 40);
         content.add(lExperiments);
 
-        experiments = new JComboBox<>();
-        String[] exps = {"-Select-","1e12","1e14","1e16","1e18","1e20"};
-        for(String exp : exps) experiments.addItem(exp);
-        experiments.setBounds(430, 200, 130, 20);
-        content.add(experiments);
-
-        doExperiment = new JButton("Do Experiment");
-        doExperiment.setBounds(430, 230, 130, 30);
-        content.add(doExperiment);
-
         setContentPane(content);
     }
 
@@ -112,10 +93,6 @@ public class GUI extends JFrame {
 
     public JTextField getSeed() {
         return tfSeed;
-    }
-
-    public JTextField getEpsilon() {
-        return tfEpsilon;
     }
 
     public JButton getCompute() {

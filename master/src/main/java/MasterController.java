@@ -67,14 +67,14 @@ public final class MasterController implements Master {
     }
 
     @Override
-    public void reportPartialResult(LinkedList<Point> points, long inside, long outside, Current current) {
+    public void reportPartialResult(long inside, long outside, Current current) {
         if (!this.isTaskAvailable)
             System.out.println("Ignoring partial result report.");
         else
-            new Thread(() -> experiment.processNewPoints(points, inside, outside)).start();
+            new Thread(() -> experiment.processNewPoints(inside, outside)).start();
     }
 
-    public void initCalculation(int targetPointsExponent, int epsilonExp, long seed) {
+    public void initCalculation(int targetPointsExponent, long seed) {
         this._initCalculation(targetPointsExponent, epsilonExp, seed);
     }
 
@@ -85,7 +85,7 @@ public final class MasterController implements Master {
     private void _initCalculation(int targetPointsExponent, int epsilonExp, long seed) {
         this.startTime = System.currentTimeMillis();
         this.targetPointsExponent = targetPointsExponent;
-        this.epsilonExp = epsilonExp;
+        this.epsilonExp = 0;
         this.seed = seed;
         this.seedOffset = 0;
         this.experiment = new MontecarloExperiment(this);
@@ -104,13 +104,13 @@ public final class MasterController implements Master {
     }
 
     public void notifyTargetReached(long insidePoints, long outsidePoints, BigInteger processedPoints, double pi) {
-        long secondsElapsed = (System.currentTimeMillis() - startTime) / 1000;
+        long millisElapsed = (System.currentTimeMillis() - startTime);
         System.out.println("Target reached. Results were:");
         System.out.println(
                 "inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi
-                        + " seconds:" + secondsElapsed);
+                        + " seconds:" + millisElapsed);
 
-        FileManager.writeOnReport(targetPointsExponent, secondsElapsed, workers.size(), pi);
+        FileManager.writeOnReport(targetPointsExponent, millisElapsed, workers.size(), pi);
 
         if (this.isAutomatedExperiment) {
             System.out.println("Taking 3000 millis to catch up...");
@@ -122,7 +122,7 @@ public final class MasterController implements Master {
             }
             automaticNext();
         } else {
-            guiController.update(pi, processedPoints, secondsElapsed);
+            guiController.update(pi, processedPoints, millisElapsed);
         }
     }
 

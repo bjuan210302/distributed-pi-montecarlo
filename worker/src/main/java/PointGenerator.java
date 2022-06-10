@@ -1,13 +1,10 @@
-import java.util.LinkedList;
 import java.util.Random;
 
-import Montecarlo.Point;
 import Montecarlo.Task;
 
 public class PointGenerator {
 
     private WorkerController worker;
-    private LinkedList<Point> generatedPoints;
     private Thread generatorThread;
     private boolean taskIsAlive;
 
@@ -16,7 +13,6 @@ public class PointGenerator {
     }
 
     public void startGeneration(Task t) {
-        generatedPoints = new LinkedList<Point>();
         Random random = new Random(t.seed + t.seedOffset);
 
         System.out.println("Starting generation seed is " + t.seed + ", offset is " + t.seedOffset);
@@ -36,14 +32,12 @@ public class PointGenerator {
                 insideCounter++;
             else
                 outsideCounter++;
-            this.generatedPoints.add(new Point(x, y, isInside));
 
-            if (i > 0 && i % 1000000 == 0) {
+            if (i > 0 && i % 5000000 == 0) {
                 System.out.println("Reached " + i + " points. Reporting points and reseting list");
-                worker.reportPoints(generatedPoints, insideCounter, outsideCounter);
+                worker.reportPoints(insideCounter, outsideCounter);
                 insideCounter = 0;
                 outsideCounter = 0;
-                generatedPoints.clear();
             }
         }
         System.out.println("Done generating.");
@@ -51,7 +45,6 @@ public class PointGenerator {
         if (this.taskIsAlive) {
             worker.notifyNoWork();
         }
-        generatedPoints.clear();
     }
 
     /**
@@ -59,9 +52,8 @@ public class PointGenerator {
      * approved.
      * Safe to kil even when task is not alive.
      */
-    public LinkedList<Point> intentionalKillTask() {
+    public void intentionalKillTask() {
         this.taskIsAlive = false;
-        return this.generatedPoints;
     }
 
     public boolean isWorking() {

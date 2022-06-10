@@ -1,14 +1,12 @@
 <state>
-  <timestamp value='1654821960388' />
+  <timestamp value='1654834198553' />
   <sourceSet name='default'>
     <source name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\Montecarlo.ice'>
-      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Point.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Task.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Observer.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Worker.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Subject.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\Master.java' />
-      <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\OrderedPointListHelper.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\ObserverPrx.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\_ObserverPrxI.java' />
       <file name='C:\Users\PC\Desktop\ws\7semestre\swarch_ws\callbackIce\master\build\generated-src\Montecarlo\WorkerPrx.java' />

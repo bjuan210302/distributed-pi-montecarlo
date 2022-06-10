@@ -4,16 +4,12 @@ import java.util.LinkedList;
 import java.util.Queue;
 // import java.util.TreeSet;
 
-import Montecarlo.Point;
-
 public class PointStore {
 
     private class Result {
-        LinkedList<Point> points;
         long inside, outside;
 
-        public Result(LinkedList<Point> points, long inside, long outside) {
-            this.points = points;
+        public Result(long inside, long outside) {
             this.inside = inside;
             this.outside = outside;
         }
@@ -50,18 +46,16 @@ public class PointStore {
         // this.epsilonExp = epsilonExp;
     }
 
-    public void enqueuToProcess(LinkedList<Point> points, long inside, long outside) {
+    public void enqueuToProcess(long inside, long outside) {
         if (enoughPoints)
             return;
 
         BigInteger totalAfterResult = totalPointCounter.add(BigInteger.valueOf(inside + outside));
         enoughPoints = targetPoints.compareTo(totalAfterResult) <= 0;
-        System.out.println("Total after result is " + totalAfterResult.toString());
-        System.out.println("Enough points is " + enoughPoints);
         if (enoughPoints)
             experiment.notifyEnoughPoints();
 
-        this.toCheckQueue.add(new Result(points, inside, outside));
+        this.toCheckQueue.add(new Result(inside, outside));
 
         if (!this.isChecking) {
             this.processerThread = new Thread(() -> check());
@@ -76,29 +70,11 @@ public class PointStore {
         while (currentResult != null) {
             BigInteger totalAfterResult = totalPointCounter
                     .add(BigInteger.valueOf(currentResult.inside + currentResult.outside));
-            boolean needAllPoints = targetPoints.compareTo(totalAfterResult) >= 0;
 
-            if (needAllPoints) {
-                totalPointCounter = totalAfterResult;
-                insideCounter += currentResult.inside;
-                outsideCounter += currentResult.outside;
-            } else {
-                System.out.println("Inside else");
-                System.out.println("totalAfterResult was " + totalAfterResult.toString() + "(" + currentResult.inside + "+" + currentResult.outside);
-                for (Point p : currentResult.points) {
-                    totalPointCounter = totalPointCounter.add(BigInteger.ONE);
-                    if (p.isInside) {
-                        this.insideCounter++;
-                    } else {
-                        this.outsideCounter++;
-                    }
+            totalPointCounter = totalAfterResult;
+            insideCounter += currentResult.inside;
+            outsideCounter += currentResult.outside;
 
-                    if (this.totalPointCounter.equals(this.targetPoints)) {
-                        toCheckQueue.clear();
-                        break;
-                    }
-                }
-            }
             this.experiment.updateState(this.insideCounter, this.outsideCounter, this.totalPointCounter);
             currentResult = toCheckQueue.poll();
         }

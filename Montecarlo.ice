@@ -2,15 +2,6 @@
 
 module Montecarlo
 {
-    class Point {
-        double x;
-        double y;
-        bool isInside;
-    };
-
-    ["java:type:java.util.LinkedList<Point>:java.util.LinkedList<Point>"]
-    sequence<Point> OrderedPointList;
-
     class Task {
         long target;
         int epsilonExponent;
@@ -36,7 +27,7 @@ module Montecarlo
     interface Master extends Subject
     {
         Task getTask();
-        void reportPartialResult(OrderedPointList points, long inside, long outside);
+        void reportPartialResult(long inside, long outside);
     };
 
 }
