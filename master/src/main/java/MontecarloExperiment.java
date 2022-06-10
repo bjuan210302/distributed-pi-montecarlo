@@ -19,12 +19,11 @@ public class MontecarloExperiment {
         this.pointStore.initStore(targetPoints, epsilonExp);
     }
 
-    public void processNewPoints(LinkedList<Point> points) {
-        pointStore.enqueuToProcess(points);
+    public void processNewPoints(LinkedList<Point> points, long inside, long outside) {
+        pointStore.enqueuToProcess(points, inside, outside);
     }
 
-    public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints,
-            long repeatedPoints) {
+    public void updateState(long totalPointsInside, long totalPointsOutside, BigInteger totalPoints) {
 
         if (this.targetPoints.equals(totalPoints)) {
             master.notifyTargetReached(totalPointsInside, totalPointsOutside, totalPoints,
@@ -34,7 +33,11 @@ public class MontecarloExperiment {
                     getPiEstimation(totalPointsInside, totalPointsOutside));
     }
 
+    public void notifyEnoughPoints() {
+        master.notifyEnoughPoints();
+    }
+
     private double getPiEstimation(long totalPointsInside, long totalPointsOutside) {
-        return 4 * ((double) totalPointsInside / (double) (totalPointsInside + totalPointsOutside));
+        return 4 * ((double) totalPointsInside) / ((double) (totalPointsInside + totalPointsOutside));
     }
 }

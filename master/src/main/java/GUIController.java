@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigInteger;
 
 public class GUIController implements Runnable {
 
@@ -19,12 +20,11 @@ public class GUIController implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        update();
         events();
     }
 
-    public void update() {
-        String[] result = {};
+    public void update(double pi, BigInteger processedPoints, long secondsElapsed) {
+        String[] result = {""+pi, processedPoints.toString(), ""+secondsElapsed};
 
         gui.getTable().addRow(result);
     }

@@ -10,7 +10,7 @@ public final class MasterController implements Master {
     private long POINTS_PER_TASK = (long) Math.pow(10, 7);
 
     private MontecarloExperiment experiment;
-
+    private GUIController guiController;
     // Experiment vars
     private long startTime;
     private int targetPointsExponent;
@@ -29,8 +29,9 @@ public final class MasterController implements Master {
     private int expCounter;
     private int repetitionsPerExperiment;
 
-    public MasterController() {
+    public MasterController(GUIController guiController) {
         this.workers = new ArrayList<WorkerPrx>();
+        this.guiController = guiController;
     }
 
     @Override
@@ -57,6 +58,8 @@ public final class MasterController implements Master {
 
     @Override
     public Task getTask(Current current) {
+        if (!this.isTaskAvailable)
+            return null;
         Task t = new Task(POINTS_PER_TASK, epsilonExp, seed, seedOffset);
         seedOffset++;
         System.out.println("New task dispatched. offset: " + seedOffset);
@@ -64,8 +67,11 @@ public final class MasterController implements Master {
     }
 
     @Override
-    public void reportPartialResult(LinkedList<Point> points, Current current) {
-        new Thread(() -> experiment.processNewPoints(points)).start();
+    public void reportPartialResult(LinkedList<Point> points, long inside, long outside, Current current) {
+        if (!this.isTaskAvailable)
+            System.out.println("Ignoring partial result report.");
+        else
+            new Thread(() -> experiment.processNewPoints(points, inside, outside)).start();
     }
 
     public void initCalculation(int targetPointsExponent, int epsilonExp, long seed) {
@@ -98,13 +104,12 @@ public final class MasterController implements Master {
     }
 
     public void notifyTargetReached(long insidePoints, long outsidePoints, BigInteger processedPoints, double pi) {
-        this.isTaskAvailable = false;
-        updateAll(isTaskAvailable);
+        long secondsElapsed = (System.currentTimeMillis() - startTime) / 1000;
         System.out.println("Target reached. Results were:");
         System.out.println(
-                "inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi);
+                "inside=" + insidePoints + " outside=" + outsidePoints + " total=" + processedPoints + " pi=" + pi
+                        + " seconds:" + secondsElapsed);
 
-        long secondsElapsed = (System.currentTimeMillis() - startTime) / 1000;
         FileManager.writeOnReport(targetPointsExponent, secondsElapsed, workers.size(), pi);
 
         if (this.isAutomatedExperiment) {
@@ -116,7 +121,15 @@ public final class MasterController implements Master {
                 e.printStackTrace();
             }
             automaticNext();
+        } else {
+            guiController.update(pi, processedPoints, secondsElapsed);
         }
+    }
+
+    public void notifyEnoughPoints() {
+        this.isTaskAvailable = false;
+        updateAll(isTaskAvailable);
+        System.out.println("Enough points received. Waiting for results...");
     }
 
     public void setupAutomaticExperiment(LinkedList<FileManager.Experiment> experiments, int repetitionsPerExperiment) {

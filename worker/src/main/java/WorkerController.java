@@ -30,35 +30,40 @@ public final class WorkerController implements Worker {
         if (taskAvailable) {
             System.out.println("About to work()");
             work();
-        }
-        else if (generator.isWorking()) {
+        } else if (generator.isWorking()) {
             this.generator.intentionalKillTask();
             System.out.println("Generation stopped.");
         }
     }
 
-    public void reportPoints(LinkedList<Point> points) {
-        master.ice_oneway().ice_compress(true).reportPartialResult(points);
+    public void reportPoints(LinkedList<Point> points, long insideCounter, long outsideCounter) {
+        master.ice_compress(true).ice_oneway().reportPartialResult(points, insideCounter, outsideCounter);
     }
 
     private void work() {
         System.out.println("Getting task...");
         Task t = this.master.getTask();
-        System.out.println("Task fetched ssuccesfully.");
-        this.generator.startGeneration(t);
+        if (t == null) {
+            System.out.println("Task was null.");
+        } else {
+            System.out.println("Task fetched ssuccesfully.");
+            this.generator.startGeneration(t);
+        }
     }
 
     public void notifyNoWork() {
         work();
     }
+
     public void onShutDown() {
         LinkedList<Point> saved = this.generator.intentionalKillTask();
         System.out.println("Killed by shutdown.");
         if (saved.size() > 0) {
-            System.out.println("Points present. Reporting " + saved.size() + " saved points to Master." );
-            master.ice_oneway().ice_compress(true).reportPartialResult(saved);
+            // System.out.println("Points present. Reporting " + saved.size() + " saved
+            // points to Master." );
+            // master.ice_oneway().ice_compress(true).reportPartialResult(saved);
         }
         System.out.println("Unsubscribing from Master...");
-        master.unsubscribe(selfPrx);
+        master.ice_oneway().unsubscribe(selfPrx);
     }
 }

@@ -18,8 +18,6 @@ module Montecarlo
         long seedOffset;
     };
 
-    sequence<Point> PointSequence;
-
     interface Observer
     {
         void update(bool taskAvailable);
@@ -38,7 +36,7 @@ module Montecarlo
     interface Master extends Subject
     {
         Task getTask();
-        void reportPartialResult(OrderedPointList points);
+        void reportPartialResult(OrderedPointList points, long inside, long outside);
     };
 
 }

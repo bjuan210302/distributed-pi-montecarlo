@@ -20,12 +20,12 @@ public class MasterServer {
                 System.err.println("too many arguments");
                 status = 1;
             } else {
-                MasterController masterController = new MasterController();
+                GUIController gc = new GUIController();
+                MasterController masterController = new MasterController(gc);
+                gc.setMasterController(masterController);
                 ObjectAdapter adapter = communicator.createObjectAdapter("Master");
                 adapter.add(masterController, Util.stringToIdentity("subject"));
                 adapter.activate();
-                GUIController gc = new GUIController();
-                gc.setMasterController(masterController);
                 System.out.println("Servidor listo.");
                 new Thread(() -> {
                     menuLoop(masterController, gc);

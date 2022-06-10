@@ -10,9 +10,12 @@ public class PointStore {
 
     private class Result {
         LinkedList<Point> points;
+        long inside, outside;
 
-        Result(LinkedList<Point> points) {
+        public Result(LinkedList<Point> points, long inside, long outside) {
             this.points = points;
+            this.inside = inside;
+            this.outside = outside;
         }
     }
 
@@ -23,9 +26,9 @@ public class PointStore {
     // private LinkedList<Point> allPoints;
     private long insideCounter;
     private long outsideCounter;
-    private long repeatedCounter;
     private Thread processerThread;
     private boolean isChecking;
+    private boolean enoughPoints;
     private BigInteger targetPoints;
     private BigInteger totalPointCounter;
     // private int epsilonExp;
@@ -43,14 +46,22 @@ public class PointStore {
         // this.inside = new TreeSet<Point>(c);
         // this.outside = new TreeSet<Point>(c);
         this.targetPoints = targetPoints;
+        this.enoughPoints = false;
         // this.epsilonExp = epsilonExp;
     }
 
-    public void enqueuToProcess(LinkedList<Point> points) {
-        if (this.totalPointCounter.equals(this.targetPoints))
+    public void enqueuToProcess(LinkedList<Point> points, long inside, long outside) {
+        if (enoughPoints)
             return;
 
-        this.toCheckQueue.add(new Result(points));
+        BigInteger totalAfterResult = totalPointCounter.add(BigInteger.valueOf(inside + outside));
+        enoughPoints = targetPoints.compareTo(totalAfterResult) <= 0;
+        System.out.println("Total after result is " + totalAfterResult.toString());
+        System.out.println("Enough points is " + enoughPoints);
+        if (enoughPoints)
+            experiment.notifyEnoughPoints();
+
+        this.toCheckQueue.add(new Result(points, inside, outside));
 
         if (!this.isChecking) {
             this.processerThread = new Thread(() -> check());
@@ -63,28 +74,32 @@ public class PointStore {
         Result currentResult = toCheckQueue.poll();
 
         while (currentResult != null) {
-            for (Point p : currentResult.points) {
-                // this.allPoints.add(p);
-                this.totalPointCounter = this.totalPointCounter.add(BigInteger.ONE);
+            BigInteger totalAfterResult = totalPointCounter
+                    .add(BigInteger.valueOf(currentResult.inside + currentResult.outside));
+            boolean needAllPoints = targetPoints.compareTo(totalAfterResult) >= 0;
 
-                // boolean pointIsNew = false;
-                if (p.isInside) {
-                    this.insideCounter++;
-                    // pointIsNew = this.inside.add(p);
-                } else {
-                    this.outsideCounter++;
-                    // pointIsNew = this.outside.add(p);
-                }
+            if (needAllPoints) {
+                totalPointCounter = totalAfterResult;
+                insideCounter += currentResult.inside;
+                outsideCounter += currentResult.outside;
+            } else {
+                System.out.println("Inside else");
+                System.out.println("totalAfterResult was " + totalAfterResult.toString() + "(" + currentResult.inside + "+" + currentResult.outside);
+                for (Point p : currentResult.points) {
+                    totalPointCounter = totalPointCounter.add(BigInteger.ONE);
+                    if (p.isInside) {
+                        this.insideCounter++;
+                    } else {
+                        this.outsideCounter++;
+                    }
 
-                // if (!pointIsNew)
-                //     this.repeatedCounter++;
-
-                if (this.totalPointCounter.equals(this.targetPoints)) {
-                    toCheckQueue.clear();
-                    break;
+                    if (this.totalPointCounter.equals(this.targetPoints)) {
+                        toCheckQueue.clear();
+                        break;
+                    }
                 }
             }
-            this.experiment.updateState(this.insideCounter, this.outsideCounter, this.totalPointCounter, this.repeatedCounter);
+            this.experiment.updateState(this.insideCounter, this.outsideCounter, this.totalPointCounter);
             currentResult = toCheckQueue.poll();
         }
 
